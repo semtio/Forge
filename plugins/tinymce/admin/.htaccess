@@ -1,0 +1,4 @@
+# Защита admin.key и github.config от прямого доступа
+<FilesMatch "^(admin\.key|github\.config)$">
+    Require all denied
+</FilesMatch>

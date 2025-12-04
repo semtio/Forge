@@ -1,0 +1,31 @@
+# Robots.txt для статического сайта
+# Общая логика: закрываем служебные директории и технические файлы
+
+User-agent: *
+
+# --- Служебные директории системы ---
+Disallow: /plugins/tinymce/admin/     # админ-панель TinyMCE
+Disallow: /plugins/tinymce/data/      # контент-файлы (не для индекса)
+Disallow: /plugins/                   # все плагины (служебные файлы)
+
+# --- Технические PHP-файлы ---
+Disallow: /encrypted.php              # редирект-скрипт (не контент)
+Disallow: /redirect.php               # редирект-скрипт (не контент)
+
+# --- Схемы микроразметки (дубли) ---
+Disallow: /shema1.php                 # include-файл схемы
+Disallow: /shema2.php                 # include-файл схемы
+
+# --- Header и Footer (фрагменты) ---
+Disallow: /header.php                 # не полноценная страница
+Disallow: /footer.php                 # не полноценная страница
+
+# Разрешаем индексацию основного контента
+Allow: /index.php
+Allow: /
+Allow: /img/
+Allow: /styles/
+Allow: /scripts/
+
+# Sitemap (подставьте реальный домен)
+Sitemap: https://{{DOMAIN}}/sitemap.xml

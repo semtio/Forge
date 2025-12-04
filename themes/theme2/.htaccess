@@ -1,0 +1,3 @@
+# Redirect /tinymce-panel to admin directory
+RewriteEngine On
+RewriteRule ^tinymce-panel/?$ plugins/tinymce/admin/index.php [L]

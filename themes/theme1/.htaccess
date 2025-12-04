@@ -1,0 +1,7 @@
+RewriteEngine On
+
+# Redirect /tinymce-panel to admin directory
+RewriteRule ^tinymce-panel/?$ plugins/tinymce/admin/index.php [L]
+
+# Custom 404 page
+ErrorDocument 404 /404.php

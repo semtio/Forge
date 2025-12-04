@@ -1,0 +1,5 @@
+build/
+greeting/
+*.rar
+*.zip
+config.php
