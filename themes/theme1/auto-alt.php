@@ -166,20 +166,32 @@ function generateSrcset($src) {
     $filename = $pathInfo['filename'];
     $ext = isset($pathInfo['extension']) ? $pathInfo['extension'] : '';
 
-    // Build variant paths
+    // Build variant paths (relative URLs for srcset)
     $variants = [
         600 => ($dir ? $dir . '/' : '') . $filename . '-600.' . $ext,
         1200 => ($dir ? $dir . '/' : '') . $filename . '-1200.' . $ext,
         1920 => ($dir ? $dir . '/' : '') . $filename . '-1920.' . $ext
     ];
 
-    // Check which variants exist
+    // Check which variants exist on disk
     $existingVariants = [];
     foreach ($variants as $width => $path) {
-        // Convert URL path to filesystem path
-        $checkPath = $_SERVER['DOCUMENT_ROOT'] . $path;
-        if (file_exists($checkPath)) {
-            $existingVariants[] = $path . ' ' . $width . 'w';
+        // Normalize path for file_exists check
+        $fsPath = str_replace(['\\', '//'], '/', $path);
+
+        // Try multiple approaches to find the file on disk
+        $checkPaths = [
+            __DIR__ . '/' . $fsPath,                              // Relative to current directory (most reliable)
+            $_SERVER['DOCUMENT_ROOT'] . '/' . ltrim($fsPath, '/'), // Absolute path from DOCUMENT_ROOT
+            realpath(__DIR__) . '/' . $fsPath,                    // Real absolute path
+        ];
+
+        foreach ($checkPaths as $checkPath) {
+            if (file_exists($checkPath)) {
+                // File exists, add to srcset (use relative URL for output)
+                $existingVariants[] = $path . ' ' . $width . 'w';
+                break;
+            }
         }
     }
 

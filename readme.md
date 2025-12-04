@@ -417,5 +417,3 @@ A: Нет! Используется self-hosted версия TinyMCE, котор
 
 **Q: Как обновить TinyMCE до новой версии?**
 A: Скачайте актуальную версию с https://www.tiny.cloud/get-tiny/self-hosted/, замените файлы в `plugins/tinymce/tinymce/` и запустите `php .\generator\cli.php --clean`.
-#   F o r g e  
- 
