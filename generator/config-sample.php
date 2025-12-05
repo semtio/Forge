@@ -15,14 +15,14 @@ $projects = [
 
         // Имя папки проекта и тема оформления
         'domain' => '',
-        'theme' => '',
+        'theme' => './themes/#?',
 
         // Данные
         'data' => [
             'domen_name' => '',
             'html_lang' => '',
-            'title' => '',
             'site_name' => '',
+            'title' => '',
             'description' => '',
             'logo' => 'src="./img/logo.webp"',
             'page_img' => 'src="./img/logo.webp"',
