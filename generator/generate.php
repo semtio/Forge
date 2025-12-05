@@ -167,7 +167,91 @@ PHP;
     return $updatedData;
 }
 
-// Apply schema (microdata) flag logic: replace runtime $data conditional includes with static ones
+/**
+ * Process HTML content to add encrypted links to buttons by class name
+ * Finds all <a> tags with class="btn-link1", "btn-link2", "btn-link3" etc
+ * and adds href with encrypted link from $data
+ *
+ * @param string $content HTML content to process
+ * @param array $data Project data with btn_link1, btn_link2, etc (already encrypted)
+ * @return string Processed HTML content
+ */
+function injectEncryptedLinksToClasses(string $content, array $data): string {
+    // Collect all btn_link mappings (class => encrypted_url)
+    $linkMappings = [];
+    foreach ($data as $key => $value) {
+        if (str_starts_with($key, 'btn_link') && is_string($value) && !empty($value)) {
+            // Extract number from btn_link1, btn_link2, etc
+            if (preg_match('/^btn_link(\d+)$/', $key, $match)) {
+                $num = $match[1];
+                $linkMappings['btn-link' . $num] = $value; // btn-link1, btn-link2, etc
+            }
+        }
+    }
+
+    if (empty($linkMappings)) {
+        return $content; // No button links to process
+    }
+
+    $updated = $content;
+
+    // For each button link class, find and update <a> tags
+    foreach ($linkMappings as $className => $encryptedUrl) {
+        // Pattern: <a ... class="..." containing btn-linkX ... >
+        // We need to add or replace href attribute
+        $pattern = '/<a\s+([^>]*class=["\'][^"\']*' . preg_quote($className, '/') . '[^"\']*["\'][^>]*)>/i';
+
+        $updated = preg_replace_callback($pattern, function($matches) use ($encryptedUrl) {
+            $fullTag = $matches[0];
+            $attributes = $matches[1];
+
+            // Check if href already exists
+            if (preg_match('/\shref\s*=\s*["\'][^"\']*["\']/i', $attributes)) {
+                // Replace existing href
+                $newTag = preg_replace('/\shref\s*=\s*["\'][^"\']*["\']/i', ' href="' . htmlspecialchars($encryptedUrl, ENT_QUOTES) . '"', $fullTag);
+            } else {
+                // Add href before closing >
+                $newTag = str_replace('>', ' href="' . htmlspecialchars($encryptedUrl, ENT_QUOTES) . '">', $fullTag);
+            }
+
+            return $newTag;
+        }, $updated);
+    }
+
+    return $updated;
+}
+
+/**
+ * Process HTML files to add encrypted links to buttons by class name
+ * Finds all <a> tags with class="btn-link1", "btn-link2", "btn-link3" etc
+ * and adds href with encrypted link from $data
+ *
+ * @param string $root Project root directory
+ * @param array $data Project data with btn_link1, btn_link2, etc (already encrypted)
+ * @return void
+ */
+function processButtonLinksByClass(string $root, array $data): void {
+    // Find all HTML files in root (including data/*.html for TinyMCE content)
+    $files = listFilesRecursive($root);
+
+    foreach ($files as $file) {
+        if (!is_file($file)) continue;
+
+        // Process only HTML files
+        $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+        if ($ext !== 'html' && $ext !== 'htm' && $ext !== 'php') continue;
+
+        $contents = file_get_contents($file);
+        if ($contents === false) continue;
+
+        $updated = injectEncryptedLinksToClasses($contents, $data);
+
+        // Save if changed
+        if ($updated !== $contents) {
+            file_put_contents($file, $updated);
+        }
+    }
+}// Apply schema (microdata) flag logic: replace runtime $data conditional includes with static ones
 function applyShemaFlags(string $root, array $proj): void {
     $header = $root . DIRECTORY_SEPARATOR . 'header.php';
     if (!is_file($header)) {
@@ -550,6 +634,9 @@ function generate(array $projects): void {
                 $patterns = $proj['postprocess'];
             }
             applyGenericPlaceholders($root, $dataWithEncryption, $patterns, $shortcodeProcessor);
+
+            // Process buttons with classes btn-link1, btn-link2, etc - add encrypted hrefs
+            processButtonLinksByClass($root, $dataWithEncryption);
         }
 
         // Copy plugin assets (CSS, JS) to build
@@ -557,6 +644,12 @@ function generate(array $projects): void {
             $pluginAssets = $root . DIRECTORY_SEPARATOR . 'plugins';
             ensureDir($pluginAssets);
             copyDirNoOverwrite($pluginsDir, $pluginAssets);
+
+            // Process TinyMCE content files in build directory with button classes
+            $tinyDataDirInBuild = $root . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'tinymce' . DIRECTORY_SEPARATOR . 'data';
+            if (is_dir($tinyDataDirInBuild) && !empty($dataWithEncryption)) {
+                processButtonLinksByClass($tinyDataDirInBuild, $dataWithEncryption);
+            }
         }
 
 
