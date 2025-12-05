@@ -49,6 +49,23 @@ function applyStaticHeaderData(string $root, array $data): void {
         }
     }
 
+    // Optionally replace or insert favicon link
+    if (!empty($data['favicon']) && is_string($data['favicon'])) {
+        $favicon = escapeHtmlAttr($data['favicon']);
+        $faviconTag = '<link rel="icon" href="' . $favicon . '" type="image/x-icon">';
+
+        if (preg_match('/<link[^>]*rel=("|")(?:shortcut\s+)?icon\1[^>]*>/i', $content)) {
+            // Replace existing favicon tag
+            $content = preg_replace('/<link[^>]*rel=("|")(?:shortcut\s+)?icon\1[^>]*>/i', $faviconTag, $content, 1);
+        } elseif (preg_match('/<head[^>]*>/i', $content)) {
+            // Insert right after <head>
+            $content = preg_replace('/(<head[^>]*>)/i', "$1\n    $faviconTag", $content, 1);
+        } else {
+            // Fallback: prepend
+            $content = $faviconTag . "\n" . $content;
+        }
+    }
+
     file_put_contents($header, $content);
 }
 

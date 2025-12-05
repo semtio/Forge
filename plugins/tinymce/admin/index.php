@@ -76,10 +76,24 @@ if ($isLoggedIn && isset($_GET['ajax'])) {
         $dataDir = dirname(__DIR__) . '/data';
         $filePath = $dataDir . '/content-' . $blockId . '.html';
 
-        if (file_put_contents($filePath, $content) !== false) {
-            echo json_encode(['success' => true, 'message' => 'Block saved successfully']);
+        // Check if directory exists and is writable
+        if (!is_dir($dataDir)) {
+            echo json_encode(['success' => false, 'message' => 'Data directory does not exist: ' . $dataDir]);
+            exit;
+        }
+        if (!is_writable($dataDir)) {
+            echo json_encode(['success' => false, 'message' => 'Data directory is not writable. Check permissions on: ' . $dataDir]);
+            exit;
+        }
+
+        // Try to save file
+        $result = file_put_contents($filePath, $content);
+        if ($result !== false) {
+            echo json_encode(['success' => true, 'message' => 'Block saved successfully', 'file' => $filePath]);
         } else {
-            echo json_encode(['success' => false, 'message' => 'Failed to save block']);
+            $error = error_get_last();
+            $errorMsg = $error ? $error['message'] : 'Unknown error';
+            echo json_encode(['success' => false, 'message' => 'Failed to save block: ' . $errorMsg, 'file' => $filePath]);
         }
         exit;
     }
