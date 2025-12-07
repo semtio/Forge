@@ -46,9 +46,9 @@ $projects = [
             ['class' => 'header', 'background' => '', 'file' => 'styles/styles.css'],
             ['class' => 'footer', 'background' => '', 'file' => 'styles/styles.css'],
 
-            // Child стили
+            // Child стили (то что не должно обновлятся)
             // Hero блок background
-            ['class' => 'sm-hero', 'background' => 'linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.8)), url(\'../img/1.webp\')', 'file' => 'styles/styles.css'],
+            ['class' => 'sm-hero', 'background' => 'linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.8)), url(\'../img/1.webp\')', 'file' => 'styles/child.css'],
 
             // Фон страницы
             ['class' => 'body', 'background' => '', 'file' => 'styles/styles.css'],

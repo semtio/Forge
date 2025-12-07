@@ -137,12 +137,11 @@ function generateEncryptedLinksFile(string $root, array $data): array {
                 continue;
             }
 
-            // Generate hash from actual link
-            $hash = substr(hash('sha256', $value), 0, 16);
-            $linksArray[$hash] = $value;
+            // Use the key name directly (btn_link1, btn_link2, etc) instead of hash
+            $linksArray[$key] = $value;
 
-            // Update data with encrypted link
-            $updatedData[$key] = './encrypted.php?key=' . $hash;
+            // Update data with encrypted link using key name
+            $updatedData[$key] = './encrypted.php?key=' . $key;
         }
     }
 
@@ -160,8 +159,8 @@ function generateEncryptedLinksFile(string $root, array $data): array {
 $links = [
 PHP;
 
-    foreach ($linksArray as $hash => $url) {
-        $content .= "\n    '" . addslashes($hash) . "' => '" . addslashes($url) . "',";
+    foreach ($linksArray as $key => $url) {
+        $content .= "\n    '" . addslashes($key) . "' => '" . addslashes($url) . "',";
     }
 
     $content .= <<<'PHP'

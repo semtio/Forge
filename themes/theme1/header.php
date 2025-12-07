@@ -1,6 +1,21 @@
 <?php
 // Auto-add alt attributes to images dynamically
 include_once __DIR__ . '/auto-alt.php';
+
+// Start output buffering to inject encrypted links into any <a class="btn-link*">
+if (!defined('BTN_LINK_RUNTIME_OB')) {
+    define('BTN_LINK_RUNTIME_OB', true);
+    // runtime.php живет в корне /plugins/tinymce/, а header.php лежит в /themes/theme1/
+    $runtimeFile = dirname(__DIR__) . '/plugins/tinymce/runtime.php';
+    if (file_exists($runtimeFile)) {
+        require_once $runtimeFile;
+        if (function_exists('injectButtonLinksRuntime')) {
+            ob_start(function ($buffer) {
+                return injectButtonLinksRuntime($buffer);
+            });
+        }
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="<?php echo $data['html_lang']; ?>">
