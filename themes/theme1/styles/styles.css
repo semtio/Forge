@@ -87,6 +87,12 @@ main .sm-hero-button {
     width: fit-content;
 }
 
+.sm-hero h1,
+.sm-hero h2,
+.sm-hero p {
+    margin: 0 0 33px 0;
+}
+
 footer {
     background-color: #0d0e10;
     text-align: center;
@@ -173,14 +179,15 @@ main h3 {
     -webkit-overflow-scrolling: touch;
     margin: 20px 0;
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
     border-spacing: 0;
-    min-width: 600px; /* минимальная ширина таблицы */
+    min-width: 600px;
+    /* минимальная ширина таблицы */
 }
 
 th,
@@ -191,7 +198,8 @@ td {
     text-align: left;
     vertical-align: top;
     line-height: 1.5;
-    white-space: normal; /* разрешаем перенос текста */
+    white-space: normal;
+    /* разрешаем перенос текста */
     word-wrap: break-word;
 }
 
@@ -240,8 +248,10 @@ tbody tr:last-child td {
 
     /* Адаптивные таблицы на мобильных */
     table {
-        min-width: 500px; /* уменьшаем минимум */
-        font-size: 13px; /* меньший шрифт */
+        min-width: 500px;
+        /* уменьшаем минимум */
+        font-size: 13px;
+        /* меньший шрифт */
     }
 
     table th,
@@ -258,7 +268,7 @@ tbody tr:last-child td {
         padding: 8px;
         font-size: 11px;
         color: #999;
-        background: linear-gradient(90deg, transparent, rgba(0,0,0,0.05) 50%, transparent);
+        background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.05) 50%, transparent);
     }
 
 }

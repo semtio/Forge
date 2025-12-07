@@ -450,6 +450,11 @@ if ($currentBlock !== null && $isLoggedIn) {
   h1, h2 {
     margin-top: 0;
   }
+  h1 a{
+    cursor: pointer;
+    text-decoration: none;
+    color: #000000;
+  }
 
   .btn {
     display: inline-block;
@@ -744,7 +749,7 @@ if ($currentBlock !== null && $isLoggedIn) {
 <?php else: ?>
 <div class="container">
   <div class="header">
-    <h1>TinyMCE Admin Panel</h1>
+    <h1><a href="/" target="_blank">TinyMCE Admin Panel</a></h1>
     <div>
       <?php if ($currentTab === 'github' && !empty($githubConfig['repo_url'])): ?>
         <a href="?update_from_github=1" class="btn btn-update" onclick="return confirm('Update from GitHub and rebuild all sites?')">Update from GitHub</a>

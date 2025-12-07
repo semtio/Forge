@@ -3,3 +3,5 @@ greeting/
 *.rar
 *.zip
 config.php
+forge-updates
+az-config*.*
